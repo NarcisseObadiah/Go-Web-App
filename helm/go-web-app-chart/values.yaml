@@ -8,7 +8,7 @@ image:
   repository: narcisse198/go-web-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "16046605042"
+  tag: "16046641682"
 
 ingress:
   enabled: false
