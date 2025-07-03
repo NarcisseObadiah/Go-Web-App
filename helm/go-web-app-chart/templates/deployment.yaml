@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: go-web-app
-        image: narcisse198/go-web-app:v1 {{ .Values.image.tag }
+        image: narcisse198/go-web-app:{{ .Values.image.tag }}
         ports:
         - containerPort: 8080
         resources:
