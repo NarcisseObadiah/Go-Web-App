@@ -2,6 +2,8 @@
 
 This project demonstrates a **complete, production-grade CI/CD pipeline** for deploying a Go web application to an AWS EKS Kubernetes cluster, fully automated via **GitHub Actions**, **Helm**, and **Argo CD** following GitOps best practices.
 
+![](static/images/diagram-export.png)
+
 ---
 
 ## 🚀 Tech Stack
@@ -17,27 +19,6 @@ This project demonstrates a **complete, production-grade CI/CD pipeline** for de
 
 ---
 
-## 📂 Project Structure
-
-```
-.
-├── .github/workflows/      # GitHub Actions CI/CD pipelines
-│   └── ci.yml
-├── charts/
-│   └── go-web-app-chart/   # Helm chart for Kubernetes deployment
-│       ├── templates/
-│       │   ├── deployment.yaml
-│       │   ├── service.yaml
-│       │   └── ingress.yaml
-│       ├── Chart.yaml
-│       └── values.yaml
-├── Dockerfile              # Docker build instructions
-├── main.go                 # Go web app source code
-├── argocd-app.yaml         # Argo CD application manifest
-├── README.md
-└── docs/                   # Screenshots & diagrams placeholder
-```
-
 ---
 
 ## ✅ Prerequisites
@@ -46,7 +27,7 @@ This project demonstrates a **complete, production-grade CI/CD pipeline** for de
 - Argo CD installed and accessible
 - DockerHub or AWS ECR credentials for pushing images
 - `kubectl`, `helm`, `argocd` CLI tools installed
-- DNS record configured for your Ingress (e.g., `go-web-app.yourdomain.com`)
+- DNS record configured for your Ingress (e.g., `go-web-app.local`)
 
 ---
 
@@ -74,12 +55,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 Build and test locally:
 
 ```bash
-docker build -t your-dockerhub-username/go-web-app:latest .
-docker run -p 8080:8080 your-dockerhub-username/go-web-app:latest
+docker build -t narcisse198/go-web-app:latest .
+docker run -p 8080:8080 narcisse198/go-web-app:latest
 ```
-
-🖼️ **Placeholder Screenshot:** Browser showing `Hello from Go Web App on EKS!` ➡️ `docs/sample-browser-output.png`
-
+ DockerHub Image Registry :
+![](static/images/hub.png)
 ---
 
 ### 2️⃣ Push to GitHub & Trigger CI/CD
@@ -117,8 +97,10 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{ github.run_id }}
 ```
 
-🖼️ **Placeholder Screenshot:** GitHub Actions workflow successful ➡️ `docs/github-actions-success.png`  
-🖼️ **Placeholder Screenshot:** DockerHub image pushed with tag ➡️ `docs/dockerhub-image.png`  
+GitHub Actions workflow successful ➡️
+![](static/images/ci.png)
+
+DockerHub image pushed with tag ➡️ ![](static/images/dockerhub.png) 
 
 ---
 
@@ -130,7 +112,7 @@ The Helm chart deploys your app on EKS.
 
 ```yaml
 image:
-  repository: your-dockerhub-username/go-web-app
+  repository: narcisse198/go-web-app
   tag: "<UPDATED BY CI/CD>"
 ```
 
@@ -140,15 +122,15 @@ Helm defines:
 ✅ Service  
 ✅ Ingress  
 
-🖼️ **Placeholder Screenshot:** Helm values updated with image tag ➡️ `docs/helm-values-tag.png`
+Helm values updated with image tag ➡️ 
 
+![](static/images/helm_hub.jpg)
 ---
-
 ### 4️⃣ GitOps with Argo CD
 
-Argo CD continuously monitors your Git repository:
+Argo CD continuously monitors Git repository:
 
-**argocd-app.yaml**
+**argocd.yaml** (removed from the project)
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -157,7 +139,7 @@ metadata:
   name: go-web-app
 spec:
   source:
-    repoURL: https://github.com/your-username/go-web-app
+    repoURL: https://github.com/NarcisseObadiah/GO-Wep-App
     path: charts/go-web-app-chart
     targetRevision: HEAD
   destination:
@@ -171,7 +153,8 @@ spec:
 
 Once your Helm values are updated by CI/CD, Argo CD automatically syncs the changes to EKS.
 
-🖼️ **Placeholder Screenshot:** Argo CD UI showing app healthy & synced ➡️ `docs/argocd-app-synced.png`
+Argo CD UI showing app healthy & synced ➡️ 
+![](static/images/argocd.png)
 
 ---
 
@@ -187,7 +170,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: go-web-app.yourdomain.com
+  - host: go-web-app.local
     http:
       paths:
       - path: /
@@ -199,27 +182,20 @@ spec:
               number: 80
 ```
 
-Update your DNS to point `go-web-app.yourdomain.com` to the EKS Load Balancer.
+Update your DNS to point `go-web-app.local` to the EKS Load Balancer.
 
-🖼️ **Placeholder Screenshot:** Browser accessing `go-web-app.yourdomain.com` ➡️ `docs/browser-access.png`  
-🖼️ **Placeholder Screenshot:** EKS console with cluster running ➡️ `docs/eks-cluster.png`  
-🖼️ **Placeholder Screenshot:** Terminal output of `kubectl get all` ➡️ `docs/kubectl-get-all.png`  
+🖼** Browser accessing `go-web-app.local` ➡️
 
----
+ ![](static/images/local.png)
+ 
+ **Our app onlive : ![](static/images/golang-website.png)
 
-## 📁 Suggested `docs/` Folder for Screenshots
+🖼** EKS console with cluster running ➡️  
+![](static/images/aws.png)
 
-```
-docs/
-├── sample-browser-output.png
-├── github-actions-success.png
-├── dockerhub-image.png
-├── helm-values-tag.png
-├── argocd-app-synced.png
-├── browser-access.png
-├── eks-cluster.png
-├── kubectl-get-all.png
-```
+🖼️** Terminal output of `kubectl get deploy, kubectl get svc, kubectl get ingress` ➡️  
+
+![](static/images/runnning_service.png)
 
 ---
 
@@ -247,4 +223,3 @@ This project showcases:
 ✔️ GitOps approach via Argo CD  
 ✔️ Clear, modular, production-grade structure  
 
-Contributions and improvements are welcome!  
