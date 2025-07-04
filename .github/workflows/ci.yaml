@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'k8s/**'
+      - 'helm/**'
       - 'README.md'
 
 jobs:
